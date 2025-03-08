@@ -1,0 +1,11 @@
+group = 'org.caffeinatedpython'
+version = '0.1.0-alpha'
+
+tasks.register("createZip", Zip) {
+    archiveFileName = "caffeinated-python-${version}.zip"
+    destinationDirectory = file("$projectDir/build/dist")
+
+    from("$projectDir/jvm/build/libs/caffeinated-python-${version}-all.jar")
+    from("$projectDir/native/build/caffeinated_python.so")
+}
+createZip.dependsOn(":jvm:shadowJar", ":native:build")
