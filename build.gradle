@@ -1,6 +1,10 @@
 group = 'org.caffeinatedpython'
 version = '0.1.0-alpha'
 
+tasks.register("build", Exec) {
+    workingDir projectDir
+    commandLine "./arrangeFiles.sh"
+}
 tasks.register("createZip", Zip) {
     archiveFileName = "caffeinated-python-${version}.zip"
     destinationDirectory = file("$projectDir/build/dist")
@@ -9,3 +13,4 @@ tasks.register("createZip", Zip) {
     from("$projectDir/native/build/caffeinated_python.so")
 }
 createZip.dependsOn(":jvm:shadowJar", ":native:build")
+build.dependsOn("createZip")

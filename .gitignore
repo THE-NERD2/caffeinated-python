@@ -1,3 +1,7 @@
+**/target/**
+**/build/**
+**/python/*.c
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

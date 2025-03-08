@@ -1,9 +1,12 @@
-from setuptools import setup
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 
 setup(
-    ext_modules = cythonize("caffeinated_python.pyx"),
-    include_dirs = ["../rust/include"],
-    libraries = ["rust"],
-    library_dirs = ["../rust/target/release"]
+    ext_modules = cythonize([Extension(
+        "caffeinated_python",
+        ["caffeinated_python.pyx"],
+        include_dirs = ["../rust/include"],
+        libraries = ["rust"],
+        library_dirs = ["../rust/target/release"]
+    )])
 )

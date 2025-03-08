@@ -20,3 +20,7 @@ test {
 kotlin {
     jvmToolchain(21)
 }
+
+shadowJar {
+    archiveBaseName.set('caffeinated-python')
+}
