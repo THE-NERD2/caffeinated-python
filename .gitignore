@@ -1,6 +1,7 @@
 **/target/**
 **/build/**
 **/python/*.c
+**/python/*.so
 
 .gradle
 build/
