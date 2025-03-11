@@ -1,5 +1,5 @@
-#ifndef RUST_H
-#define RUST_H
+#ifndef JNI_HELPERS_H
+#define JNI_HELPERS_H
 
 #ifdef __cplusplus
 #define EXPORT extern "C"

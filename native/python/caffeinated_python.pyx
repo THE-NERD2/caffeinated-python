@@ -1,4 +1,4 @@
-from caffeinated_python_rust cimport *
+from jni_helpers cimport *
 
 cdef unsigned char* jvm
 

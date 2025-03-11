@@ -4,14 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03ea7929-bf2a-49c7-8718-d22c5fe0ff20" name="Changes" comment="Changed build to make python extension library work">
+    <list default="true" id="03ea7929-bf2a-49c7-8718-d22c5fe0ff20" name="Changes" comment="Got some jni stuff to work">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/native/python/caffeinated_python.pyx" beforeDir="false" afterPath="$PROJECT_DIR$/native/python/caffeinated_python.pyx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/native/python/caffeinated_python_rust.pxd" beforeDir="false" afterPath="$PROJECT_DIR$/native/python/caffeinated_python_rust.pxd" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/native/python/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/native/python/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/native/rust/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/native/rust/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/native/rust/include/caffeinated_python_rust.h" beforeDir="false" afterPath="$PROJECT_DIR$/native/rust/include/caffeinated_python_rust.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/native/rust/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/native/rust/src/lib.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -128,7 +122,15 @@
       <option name="project" value="LOCAL" />
       <updated>1741536481467</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Got some jni stuff to work">
+      <option name="closed" value="true" />
+      <created>1741711365843</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1741711365843</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -146,6 +148,7 @@
     <MESSAGE value="(Probably) got build working (will start testing)" />
     <MESSAGE value="Fixed build; update .gitignore" />
     <MESSAGE value="Changed build to make python extension library work" />
-    <option name="LAST_COMMIT_MESSAGE" value="Changed build to make python extension library work" />
+    <MESSAGE value="Got some jni stuff to work" />
+    <option name="LAST_COMMIT_MESSAGE" value="Got some jni stuff to work" />
   </component>
 </project>
