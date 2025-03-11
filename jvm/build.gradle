@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation(files("native/build/python_helpers.so"))
 }
 
 test {
@@ -24,3 +25,5 @@ kotlin {
 shadowJar {
     archiveBaseName.set('caffeinated-python')
 }
+
+compileKotlin.dependsOn(":jvm:native:build")

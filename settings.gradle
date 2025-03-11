@@ -4,4 +4,6 @@ plugins {
 rootProject.name = 'caffeinated-python'
 include 'jvm'
 include 'native'
+include 'jvm:native'
+findProject(':jvm:native')?.name = 'native'
 
