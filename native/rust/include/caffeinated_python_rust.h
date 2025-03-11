@@ -7,6 +7,7 @@
 #define EXPORT
 #endif
 
-EXPORT void test();
+EXPORT unsigned char* create_JVM(const char*); // JavaVM* (classpath)
+EXPORT unsigned char* instantiate_class(unsigned char*, const char*); // JObject* (jvm, classname)
 
 #endif

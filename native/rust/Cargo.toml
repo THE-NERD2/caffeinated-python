@@ -8,4 +8,4 @@ name = "caffeinatedpython"
 crate-type = ["staticlib"]
 
 [dependencies]
-jni = "0.21.1"
+jni = {version = "0.21.1", features = ["invocation"]}

@@ -7,5 +7,5 @@ setup(
         ["caffeinated_python.pyx"],
         include_dirs = ["../rust/include"],
         extra_objects = ["../rust/target/release/libcaffeinatedpython.a"]
-    )])
+    )], force = True)
 )
