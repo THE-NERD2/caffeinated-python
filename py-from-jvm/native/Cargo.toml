@@ -1,0 +1,12 @@
+[package]
+name = "native"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "caffeinatedpython"
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.21.1"
+pyo3 = "0.24.0"

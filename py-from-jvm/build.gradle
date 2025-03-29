@@ -1,0 +1,25 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '2.1.10'
+}
+
+group = 'org.caffeinatedpython'
+version = '0.1.0-alpha'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation(files("native/target/release/libcaffeinatedpython.so"))
+}
+
+test {
+    systemProperty("java.library.path", file("$projectDir/native/target/release").absolutePath)
+    useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(21)
+}
+
+compileKotlin.dependsOn(":py-from-jvm:native:build")

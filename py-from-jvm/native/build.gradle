@@ -1,0 +1,7 @@
+group = 'org.caffeinatedpython'
+version = '0.1.0-alpha'
+
+tasks.register("build", Exec) {
+    workingDir projectDir
+    commandLine "cargo", "build", "--release"
+}
