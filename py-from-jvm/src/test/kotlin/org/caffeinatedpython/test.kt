@@ -5,6 +5,10 @@ import org.junit.jupiter.api.Test
 class Tests {
     @Test
     fun test() {
-        PyModule("it_doesn't_matter_yet")
+        PyModule("numpy")["__version__"]
+    }
+    @Test
+    fun shouldFail() {
+        PyModule("numpy")["absolutely_does_not_exist"]
     }
 }

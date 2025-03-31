@@ -1,12 +1,10 @@
 package org.caffeinatedpython.interop;
 
-import org.caffeinatedpython.PyMember;
-
-import java.util.HashMap;
-
 public class PyInterop {
     static {
         System.loadLibrary("caffeinatedpython");
+        init();
     }
-    public static native HashMap<String, PyMember> importPythonModule(String name);
+    private static native void init();
+    public static native NativeUsableMembersMap importPythonModule(String name);
 }
