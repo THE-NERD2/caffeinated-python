@@ -10,4 +10,4 @@ crate-type = ["cdylib"]
 [dependencies]
 jni = "0.21.1"
 libc = "0.2.171"
-pyo3 = "0.24.1"
+pyo3 = {version = "0.24.1", features = ["auto-initialize"]}

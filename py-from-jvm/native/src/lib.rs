@@ -16,8 +16,6 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_init(_: JNIE
             panic!("Failed to import python");
         }
     }
-
-    pyo3::prepare_freethreaded_python();
 }
 
 #[allow(dead_code)]
