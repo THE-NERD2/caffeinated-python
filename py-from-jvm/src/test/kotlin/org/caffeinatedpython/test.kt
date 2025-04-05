@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 
 class Tests {
     @Test
-    fun test() {
+    fun getVersion() {
         Python.pythonScope {
             println(import("numpy")["__version__"].extract(String::class))
         }
