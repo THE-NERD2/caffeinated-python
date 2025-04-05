@@ -5,10 +5,15 @@ import org.junit.jupiter.api.Test
 class Tests {
     @Test
     fun test() {
-        PyModule("numpy")["__version__"]
+        Python.pythonScope {
+            println(import("numpy")["__version__"].extract(String::class))
+        }
     }
     @Test
-    fun shouldFail() {
-        PyModule("numpy")["absolutely_does_not_exist"]
+    fun getIndex() {
+        Python.pythonScope {
+            val version = import("numpy")["__version__"].now()
+            println(version.extract(String::class))
+        }
     }
 }

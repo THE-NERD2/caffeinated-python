@@ -6,5 +6,8 @@ public class PyInterop {
         init();
     }
     private static native void init();
-    public static native NativeUsableMembersMap importPythonModule(String name);
+    public static native int createPythonScope();
+    public static native void closePythonScope(int scopeIndex);
+    public static native int performOperation(int scopeIndex, String operation);
+    public static native Object operateAndExtract(int scopeIndex, String operation, String type);
 }
