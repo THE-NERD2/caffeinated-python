@@ -25,15 +25,11 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_init(_: JNIE
 #[allow(dead_code)]
 struct PythonScope {
     handle: JoinHandle<()>,
-    tx: Sender<Message>,
+    tx: Sender<String>,
     rx: Receiver<Response>
 }
 static PYTHON_SCOPES: Mutex<Vec<PythonScope>> = Mutex::new(Vec::new());
 
-enum Message {
-    Operation(String),
-    Exit
-}
 enum Response {
     Index(i32),
     String(String),
@@ -47,7 +43,7 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPython
     let (tx_thread, rx) = mpsc::channel();
     let handle = thread::spawn(move || {
         Python::with_gil(|py| {
-            let mut msg: Message;
+            let mut msg: String;
             let mut vars: Vec<Bound<'_, PyAny>> = Vec::new();
             loop {
                 match rx_thread.recv() {
@@ -55,8 +51,8 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPython
                     Err(_) => break
                 }
                 match msg {
-                    Message::Exit => break,
-                    Message::Operation(op) => {
+                    val if val == "*EXIT".to_string() => break,
+                    op => {
                         let mut tokens = op.split(" ");
                         let mut current_obj: Bound<'_, PyAny> = PyInt::new(py, 0).as_any().clone(); // Placeholder
                         loop {
@@ -119,13 +115,13 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPython
 #[no_mangle]
 pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_closePythonScope(_: JNIEnv<'_>, _: JClass<'_>, index: i32) {
     let scope = &PYTHON_SCOPES.lock().unwrap()[index as usize];
-    let _ = scope.tx.send(Message::Exit);
+    let _ = scope.tx.send("*EXIT".to_string());
 }
 #[no_mangle]
 pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_performOperation(mut env: JNIEnv<'_>, _: JClass<'_>, index: i32, operation: JObject<'_>) -> i32 {
     let scope = &PYTHON_SCOPES.lock().unwrap()[index as usize];
     let operation_rstr: String = env.get_string(&JString::from(operation)).unwrap().into();
-    let _ = scope.tx.send(Message::Operation(operation_rstr));
+    let _ = scope.tx.send(operation_rstr);
     match scope.rx.recv().unwrap() {
         Response::Index(ret) => return ret,
         _ => panic!("Did not get an index from a non-extraction operation")
@@ -136,7 +132,7 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_operateAndEx
     let scope = &PYTHON_SCOPES.lock().unwrap()[index as usize];
     let operation_rstr: String = env.get_string(&JString::from(operation)).unwrap().into();
     let extract_type_rstr: String = env.get_string(&JString::from(extract_type)).unwrap().into();
-    let _ = scope.tx.send(Message::Operation([operation_rstr, "*EXTRACT".to_string(), extract_type_rstr].join(" ")));
+    let _ = scope.tx.send([operation_rstr, "*EXTRACT".to_string(), extract_type_rstr].join(" "));
     match scope.rx.recv().unwrap() {
         Response::String(res) => return env.new_string(res).unwrap().into(),
         Response::Int(res) => return env.new_object("Ljava/lang/Long;", "(J)V", &[JValueGen::Long(res)]).unwrap(),
