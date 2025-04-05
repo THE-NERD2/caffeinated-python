@@ -28,7 +28,7 @@ struct PythonScope {
     tx: Sender<String>,
     rx: Receiver<Response>
 }
-static PYTHON_SCOPES: Mutex<Vec<PythonScope>> = Mutex::new(Vec::new());
+static PYTHON_SCOPE: Mutex<Option<PythonScope>> = Mutex::new(None);
 
 enum Response {
     Index(i32),
@@ -38,7 +38,7 @@ enum Response {
 }
 
 #[no_mangle]
-pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPythonScope(_: JNIEnv<'_>, _: JClass<'_>) -> i32 {
+pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPythonScope(_: JNIEnv<'_>, _: JClass<'_>) {
     let (tx, rx_thread) = mpsc::channel();
     let (tx_thread, rx) = mpsc::channel();
     let handle = thread::spawn(move || {
@@ -105,21 +105,18 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPython
             }
         });
     });
-    let mut python_scopes = PYTHON_SCOPES.lock().unwrap();
-    let ret = python_scopes.len();
-    python_scopes.push(PythonScope {
+    *PYTHON_SCOPE.lock().unwrap() = Some(PythonScope {
         handle, tx, rx
-    });
-    return ret.try_into().unwrap();
+    })
 }
 #[no_mangle]
-pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_closePythonScope(_: JNIEnv<'_>, _: JClass<'_>, index: i32) {
-    let scope = &PYTHON_SCOPES.lock().unwrap()[index as usize];
-    let _ = scope.tx.send("*EXIT".to_string());
+pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_closePythonScope(_: JNIEnv<'_>, _: JClass<'_>) {
+    let _ = PYTHON_SCOPE.lock().unwrap().as_ref().unwrap().tx.send("*EXIT".to_string());
 }
 #[no_mangle]
-pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_performOperation(mut env: JNIEnv<'_>, _: JClass<'_>, index: i32, operation: JObject<'_>) -> i32 {
-    let scope = &PYTHON_SCOPES.lock().unwrap()[index as usize];
+pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_performOperation(mut env: JNIEnv<'_>, _: JClass<'_>, operation: JObject<'_>) -> i32 {
+    let scope_raw = PYTHON_SCOPE.lock().unwrap();
+    let scope = scope_raw.as_ref().unwrap();
     let operation_rstr: String = env.get_string(&JString::from(operation)).unwrap().into();
     let _ = scope.tx.send(operation_rstr);
     match scope.rx.recv().unwrap() {
@@ -128,8 +125,9 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_performOpera
     }
 }
 #[no_mangle]
-pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_operateAndExtract<'a>(mut env: JNIEnv<'a>, _: JClass<'a>, index: i32, operation: JObject<'a>, extract_type: JObject<'a>) -> JObject<'a> {
-    let scope = &PYTHON_SCOPES.lock().unwrap()[index as usize];
+pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_operateAndExtract<'a>(mut env: JNIEnv<'a>, _: JClass<'a>, operation: JObject<'a>, extract_type: JObject<'a>) -> JObject<'a> {
+    let scope_raw = PYTHON_SCOPE.lock().unwrap();
+    let scope = scope_raw.as_ref().unwrap();
     let operation_rstr: String = env.get_string(&JString::from(operation)).unwrap().into();
     let extract_type_rstr: String = env.get_string(&JString::from(extract_type)).unwrap().into();
     let _ = scope.tx.send([operation_rstr, "*EXTRACT".to_string(), extract_type_rstr].join(" "));

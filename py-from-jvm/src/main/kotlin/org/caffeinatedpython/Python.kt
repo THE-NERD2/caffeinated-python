@@ -3,13 +3,14 @@ package org.caffeinatedpython
 import org.caffeinatedpython.interop.PyInterop
 import kotlin.reflect.KClass
 
-class Python private constructor(private val threadIndex: Int) {
+class Python private constructor() {
     companion object {
+        @Synchronized
         fun pythonScope(block: Python.() -> Unit) {
-            val threadIndex = PyInterop.createPythonScope()
-            val python = Python(threadIndex)
+            PyInterop.createPythonScope()
+            val python = Python()
             python.block()
-            PyInterop.closePythonScope(threadIndex)
+            PyInterop.closePythonScope()
         }
     }
 
@@ -36,9 +37,9 @@ class Python private constructor(private val threadIndex: Int) {
         }
         constructor(identifier: String): this(identifier_name = identifier)
         operator fun get(name: String) = PyAny(subject = this, identifier_name = name)
-        fun <T: Any> extract(clazz: KClass<T>) = PyInterop.operateAndExtract(threadIndex, operation.toString(), clazz.simpleName!!) as T
+        fun <T: Any> extract(clazz: KClass<T>) = PyInterop.operateAndExtract(operation.toString(), clazz.simpleName!!) as T
         fun now(): PyAny {
-            operation = Operation.EXISTING_VAR(PyInterop.performOperation(threadIndex, operation.toString()))
+            operation = Operation.EXISTING_VAR(PyInterop.performOperation(operation.toString()))
             return this
         }
     }

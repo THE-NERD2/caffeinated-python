@@ -6,8 +6,8 @@ public class PyInterop {
         init();
     }
     private static native void init();
-    public static native int createPythonScope();
-    public static native void closePythonScope(int scopeIndex);
-    public static native int performOperation(int scopeIndex, String operation);
-    public static native Object operateAndExtract(int scopeIndex, String operation, String type);
+    public static native void createPythonScope();
+    public static native void closePythonScope();
+    public static native synchronized int performOperation(String operation);
+    public static native synchronized Object operateAndExtract(String operation, String type);
 }
