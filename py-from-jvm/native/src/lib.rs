@@ -85,9 +85,16 @@ pub extern "system" fn Java_org_caffeinatedpython_interop_PyInterop_createPython
                                             let val: &str = current_obj.extract().unwrap();
                                             let _ = tx_thread.send(Response::String(val.to_string()));
                                         }
-                                        name => { // Temporary, to figure out what the actual name is
-                                            println!("{}", name);
-                                            let _ = tx_thread.send(Response::String("".to_string()));
+                                        "Byte" | "Short" | "Int" | "Long" => {
+                                            let val: i64 = current_obj.extract().unwrap();
+                                            let _ = tx_thread.send(Response::Int(val));
+                                        }
+                                        "Float" | "Double" => {
+                                            let val: f64 = current_obj.extract().unwrap();
+                                            let _ = tx_thread.send(Response::Float(val));
+                                        }
+                                        _ => {
+                                            // Respond with a command to throw an exception for illegal extraction
                                         }
                                     }
                                     break;

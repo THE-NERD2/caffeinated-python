@@ -16,4 +16,10 @@ class Tests {
             println(version.extract(String::class))
         }
     }
+    @Test
+    fun getMaxInt() {
+        Python.pythonScope {
+            println(import("sys")["maxsize"].extract(Long::class))
+        }
+    }
 }
