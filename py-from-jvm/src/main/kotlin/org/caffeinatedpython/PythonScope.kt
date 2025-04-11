@@ -1,18 +1,19 @@
 package org.caffeinatedpython
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import org.caffeinatedpython.interop.PyInterop
-import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 
-class PythonScope private constructor() : CoroutineScope {
+class PythonScope private constructor()  {
     companion object {
-        @Synchronized
-        fun pythonScope(block: PythonScope.() -> Unit) {
+        suspend fun pythonScope(block: suspend PythonScope.() -> Unit) = coroutineScope {
             PyInterop.createPythonScope()
             val pythonScope = PythonScope()
-            pythonScope.block()
+            withContext(Dispatchers.IO) {
+                pythonScope.block()
+            }
             PyInterop.closePythonScope()
         }
     }
@@ -24,6 +25,7 @@ class PythonScope private constructor() : CoroutineScope {
         objectIndex: Int? = null
     ) {
         private var operation: Operation
+        private var calculated = false
 
         init {
             if (moduleName != null) {
@@ -46,13 +48,13 @@ class PythonScope private constructor() : CoroutineScope {
             PyInterop.operateAndExtract(operation.toString(), clazz.simpleName!!) as T
 
         fun now(): PyAny {
-            operation = Operation.EXISTING_VAR(PyInterop.performOperation(operation.toString()))
+            if(!calculated) {
+                operation = Operation.EXISTING_VAR(PyInterop.performOperation(operation.toString()))
+                calculated = true
+            }
             return this
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Default
 
     fun import(name: String) = PyAny(moduleName = name)
 }
