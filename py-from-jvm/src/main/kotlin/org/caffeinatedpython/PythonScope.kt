@@ -1,15 +1,19 @@
 package org.caffeinatedpython
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import org.caffeinatedpython.interop.PyInterop
 import kotlin.reflect.KClass
 
-class PythonScope private constructor()  {
+class PythonScope private constructor(scope: CoroutineScope): CoroutineScope by scope {
     companion object {
-        suspend fun pythonScope(block: suspend PythonScope.() -> Unit) {
+        suspend fun pythonScope(block: suspend PythonScope.() -> Unit) = coroutineScope {
             PyInterop.createPythonScope()
-            val pythonScope = PythonScope()
+            val pythonScope = PythonScope(this)
             withContext(Dispatchers.IO) {
                 pythonScope.block()
             }
@@ -37,6 +41,10 @@ class PythonScope private constructor()  {
                 }
             } else {
                 operation = Operation.EXISTING_VAR(objectIndex!!)
+            }
+            launch {
+                yield()
+                now()
             }
         }
 

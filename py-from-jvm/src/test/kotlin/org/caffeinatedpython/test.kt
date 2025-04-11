@@ -1,5 +1,6 @@
 package org.caffeinatedpython
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.caffeinatedpython.exceptions.PythonException
 import org.junit.jupiter.api.Test
@@ -9,6 +10,14 @@ class Tests {
     fun getVersion() = runBlocking {
         PythonScope.pythonScope {
             println(import("numpy")["__version__"].extract(String::class))
+        }
+    }
+    @Test
+    fun getVersionDelay() = runBlocking {
+        PythonScope.pythonScope {
+            val version = import("numpy")["__version__"]
+            delay(1000L)
+            println(version.extract(String::class))
         }
     }
     @Test
