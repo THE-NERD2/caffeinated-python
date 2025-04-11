@@ -14,9 +14,7 @@ class PythonScope private constructor(scope: CoroutineScope): CoroutineScope by 
         suspend fun pythonScope(block: suspend PythonScope.() -> Unit) = coroutineScope {
             PyInterop.createPythonScope()
             val pythonScope = PythonScope(this)
-            withContext(Dispatchers.IO) {
-                pythonScope.block()
-            }
+            pythonScope.block()
             PyInterop.closePythonScope()
         }
     }
