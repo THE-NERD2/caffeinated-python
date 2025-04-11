@@ -6,26 +6,26 @@ import org.junit.jupiter.api.Test
 class Tests {
     @Test
     fun getVersion() {
-        Python.pythonScope {
+        PythonScope.pythonScope {
             println(import("numpy")["__version__"].extract(String::class))
         }
     }
     @Test
     fun getIndex() {
-        Python.pythonScope {
+        PythonScope.pythonScope {
             val version = import("numpy")["__version__"].now()
             println(version.extract(String::class))
         }
     }
     @Test
     fun getMaxInt() {
-        Python.pythonScope {
+        PythonScope.pythonScope {
             println(import("sys")["maxsize"].extract(Long::class))
         }
     }
     @Test
     fun exception() {
-        Python.pythonScope {
+        PythonScope.pythonScope {
             try {
                 PyAny("absolutely_does_not_exist").now()
             } catch(e: PythonException) {
@@ -35,7 +35,7 @@ class Tests {
     }
     @Test
     fun extractionException() {
-        Python.pythonScope {
+        PythonScope.pythonScope {
             try {
                 import("sys")["maxsize"].extract(String::class)
             } catch(e: Exception) {
