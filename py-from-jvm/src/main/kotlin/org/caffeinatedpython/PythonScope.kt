@@ -1,14 +1,13 @@
 package org.caffeinatedpython
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import org.caffeinatedpython.interop.PyInterop
 import kotlin.reflect.KClass
 
 class PythonScope private constructor()  {
     companion object {
-        suspend fun pythonScope(block: suspend PythonScope.() -> Unit) = coroutineScope {
+        suspend fun pythonScope(block: suspend PythonScope.() -> Unit) {
             PyInterop.createPythonScope()
             val pythonScope = PythonScope()
             withContext(Dispatchers.IO) {
